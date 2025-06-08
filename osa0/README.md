@@ -44,7 +44,7 @@ sequenceDiagram
     server-->>browser: redirect /notes
     deactivate server
 
-    Note right of server: Server adds note from form to json file which notes are shown in page /notes
+    Note left of server: Server adds note from form to json file which notes are shown in page /notes
 
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
     activate server
