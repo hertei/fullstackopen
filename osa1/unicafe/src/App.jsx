@@ -2,6 +2,53 @@ import { useState } from 'react'
 
 const Button = ({onClick, name}) => <button onClick={onClick}>{name}</button>
 
+const Statistics = ({good, neutral, bad}) => {
+  if (good > 0 || neutral > 0 || bad > 0) {
+    return (
+      <table>
+        <thead>
+          <StatisticsLine text='good' value = {good} />
+          <StatisticsLine text='neutral' value = {neutral} />
+          <StatisticsLine text='bad' value = {bad} />
+          <StatisticsLine text='all' value = {good + neutral + bad} />
+          <StatisticsLine text='average' value = {(good - bad) / (good + neutral + bad)} />
+          <StatisticsLine text='positive' value = {(good / (good + neutral + bad))*100} />
+        </thead>
+      </table>
+    )
+  }
+  else {
+    return <div>No feedback given</div>
+  }
+}
+
+const StatisticsLine = ({text, value}) => {
+  if (text == 'average'){
+    return (
+      <tr>
+      <td>{text}</td>
+      <td>{value.toFixed(1)}</td>
+      </tr>
+    )
+  }else if (text == 'positive'){
+    return (
+      <tr>
+        <td>{text}</td>
+        <td>{value.toFixed(1)} %</td>
+      </tr>
+    )
+  }
+    else{
+    return (
+      <tr>
+        <td>{text}</td>
+        <td>{value}</td>
+      </tr>
+    )
+  }
+}
+  
+
 const App = () => {
   // tallenna napit omaan tilaansa
   const [good, setGood] = useState(0)
@@ -31,9 +78,7 @@ const App = () => {
       <Button onClick={() => handleClick(0)} name='neutral'/>
       <Button onClick={() => handleClick(-1)} name='bad'/>
       <h2>Statistics</h2>
-        <div>Hyviä: {good}</div>
-        <div>Neutraaleja: {neutral}</div>
-        <div>Huonoja: {bad}</div>
+      <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
   )
 }
