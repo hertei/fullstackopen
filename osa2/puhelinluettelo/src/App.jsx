@@ -1,16 +1,12 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
 
-const Persons = ({persons, filter}) => {
-  const personsToShow = persons.filter(person => 
-  person.name.toLowerCase().includes(filter.toLowerCase()))
-  
+const Person = ({person, deletePerson}) => {
   return (
-    <ul>
-      {personsToShow.map((person, i) => (
-        <li key={i}>{person.name} {person.number}</li>
-      ))}
-    </ul>
+    <div>
+      {person.name} {person.number}
+      <button onClick={deletePerson}>delete</button>
+    </div>
   )
 }
 
@@ -52,17 +48,17 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const personsToShow = persons.filter(person => 
+  person.name.toLowerCase().includes(filter.toLowerCase()))
+
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log('promise fulfilled')
-        setPersons(response.data)
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
       })
   }, [])
-
-  console.log('render', persons.length, 'persons')
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -72,11 +68,53 @@ const App = () => {
       number: newNumber
     }
     if (persons.map(name => name=name.name).includes(personObject.name)){
-      alert(`${personObject.name}  is already added to phonebook`)
+      const person = persons.find(p => p.name === personObject.name)   
+      const changedPerson = {...person, number: personObject.number}
+      if (confirm(`${personObject.name} is already in phonebook, update the number ${person.number} to ${personObject.number} ?`)){  
+        personService
+          .updatePerson(person.id, changedPerson)
+          .then(returnedPerson => {
+            setPersons(persons.map(person => person.name !== personObject.name ? person : returnedPerson))
+          })
+          .catch(error => {
+            alert(
+              `Person ${personObject.name} was deleted from server`
+            )
+            setPersons(persons.filter(p => p.name !== personObject.name))
+            setNewName('')
+            setNewNumber('')
+          })
+      }else{
+        setNewName('')
+        setNewNumber('')
+      }
     }else{
-      setPersons(persons.concat(personObject))
-      setNewName('')
-      setNewNumber('')
+      personService
+        .createPerson(personObject)
+        .then(returnedPerson => {         
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')
+          setNewNumber('')
+        })
+    }
+  }
+
+  const deletePerson = (id) => {
+    const url = `http://localhost:3001/notes/${id}`
+    const personToDelete = persons.find(p => p.id === id)
+    if (confirm(`Poistetaanko ${personToDelete.name}?`)){
+      personService
+        .deletePerson(id)
+        .then(returnedPerson => {
+          console.log(`deleted person ${personToDelete.name}`)
+          setPersons(persons.filter(p => p.id !== id))
+        })
+        .catch(error => {
+          alert(
+            `the person '${personToDelete.name}' was already deleted from server` 
+          )
+          setPersons(persons.filter(n => n.id !== id))
+        })
     }
   }
 
@@ -97,7 +135,13 @@ const App = () => {
         onChangeNumber={handleNoteChangeNumber}
       />
       <h2>Numbers</h2>
-      <Persons persons={persons} filter={filter}/>
+      {personsToShow.map(person => 
+        <Person
+          key = {person.id}
+          person = {person}
+          deletePerson={() => deletePerson(person.id)}
+        />
+      )}
     </div>
   )
 }
