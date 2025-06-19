@@ -1,27 +1,30 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
-const Countries = ({country}) => {
+// Palautetaan maan nimi
+const Countries = ({ country }) => {
   return (
-      <div>
-        {country}
-      </div>
+    <div>
+      {country}
+    </div>
   )
 }
 
-const CountryInformation = ({country}) => {
-  console.log(`Vain yksi maa ${country}`)
-  const [countryInformation, setInformation] = useState(null) 
-  
-  useEffect (() => {
+// Haetaan ja näytetään yksittäisen maan tiedot
+const CountryInformation = ({ country }) => {
+  const [countryInformation, setInformation] = useState(null)
+
+  // Haetaan maan tiedot
+  useEffect(() => {
     axios
       .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${country}`)
       .then(response => {
-        console.log(`Ainoan maan tiedot ${response.data}`)
         setInformation(response.data)
       })
-    },[])
-  if (countryInformation){
+  }, [country])
+
+  // Näytetään tiedot kun ne on haettu
+  if (countryInformation) {
     return (
       <>
         <h2>{countryInformation.name.common}</h2>
@@ -34,66 +37,68 @@ const CountryInformation = ({country}) => {
           </li>
         ))}
         <div>
-        <img src={countryInformation.flags.png} width="200"/>
+          <img src={countryInformation.flags.png} width="200" />
         </div>
       </>
     )
   }
+  // Ei näytetä mitään ennen kuin tiedot on haettu
+  return null
 }
 
-const Information = ({countriesToShow, country}) => {
-  return (countriesToShow.length >= 10
-      ? <div>Too many matches, specify antoher filter</div>
-      : countriesToShow.length === 1
-        ? countriesToShow.map(country  => 
-          <CountryInformation
-            key={country}
-            country={country}
-          />)
-        : countriesToShow.map(country  => 
-          <Countries
-            key={country}
-            country={country}
-          />
-      )
+// Näytetään maat tai maan tiedot suodatuksen perusteella
+const Information = ({ countriesToShow }) => {
+  // Jos maita yli 10, pyydetään tarkennus
+  if (countriesToShow.length >= 10) {
+    return <div>Too many matches, specify another filter</div>
+  }
+  // Jos vain yksi maa, näytetään sen tiedot
+  if (countriesToShow.length === 1) {
+    return countriesToShow.map(country =>
+      <CountryInformation
+        key={country}
+        country={country}
+      />
     )
+  }
+  // Muussa tapauksessa listataan maat
+  return countriesToShow.map(country =>
+    <Countries
+      key={country}
+      country={country}
+    />
+  )
 }
-
 
 const App = () => {
   const [value, setValue] = useState('')
-  const [country, setCountry] = useState(null)
   const [countries, setCountries] = useState([])
-  
+
+  // Suodatetaan maat hakukentän arvon perusteella
   const countriesToShow = countries.filter(c => c.toLowerCase().includes(value.toLowerCase()))
 
-  //haetaan kaikki maat
+  // Haetaan kaikki maat API rajapinnan kautta sovelluksen käynnistyessä
   useEffect(() => {
     axios
       .get(`https://studies.cs.helsinki.fi/restcountries/api/all`)
       .then(response => {
-        setCountries(response.data.map(c => c=c.name.common))
+        setCountries(response.data.map(c => c.name.common))
       })
-    },[])
+  }, [])
 
+  // Päivitetään hakukentän arvo
   const handleChange = (event) => {
     setValue(event.target.value)
   }
 
-  const onSearch = (event) => {
-    event.preventDefault()
-    setCountry(value)
-    setValue('')
-  }
-
   return (
     <div>
-      <form onSubmit={onSearch}>
+      <form>
         find countries: <input value={value} onChange={handleChange} />
       </form>
-      <Information 
+      <Information
         countriesToShow={countriesToShow}
-        country={country}/>
+      />
     </div>
   )
 }
