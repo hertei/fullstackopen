@@ -72,6 +72,11 @@ const CountryInformation = ({ country }) => {
         <div>
           <img src={countryInformation.flags.png} width="200" />
         </div>
+        <h3>Weather in {countryInformation.capital}</h3>
+        <Weather 
+          lat={countryInformation.capitalInfo.latlng[0]}
+          lon={countryInformation.capitalInfo.latlng[1]}
+        />
       </>
     )
   }
@@ -79,12 +84,47 @@ const CountryInformation = ({ country }) => {
   return null
 }
 
+const Weather = ({lat, lon}) => {
+  const weather_api_key = import.meta.env.VITE_OPENWEATHER_APIKEY
+  const [weatherInfo, setWeather] = useState(null)
+
+  // Haetaan pääkaupungin säätiedot
+  useEffect(() => {
+    axios
+      .get(`https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&units=metric&appid=${weather_api_key}`)
+      .then(response => {
+        setWeather(response.data)
+      })
+  }, [])
+
+  if (weatherInfo) {
+      return (
+        <>
+          <div>
+            Temperature {weatherInfo.current.temp} Celsius
+          </div>
+          <img src={`https://openweathermap.org/img/wn/${weatherInfo.current.weather[0].icon}@2x.png`} />
+          <div>
+            Wind {weatherInfo.current.wind_speed} m/s
+          </div>
+        </>
+    )
+  }
+}
+
 const App = () => {
   const [value, setValue] = useState('')
   const [countries, setCountries] = useState([])
 
-  // Suodatetaan maat hakukentän arvon perusteella
-  const countriesToShow = countries.filter(c => c.toLowerCase().includes(value.toLowerCase()))
+  // Jos haku osuu täsmälleen johonkin maahan, näytetään vain se maa
+  const exactMatch = countries.find(
+    c => c.toLowerCase() === value.toLowerCase()
+  )
+
+  // Valitaan näytettävä maa sen mukaan onko haku täsmälleen jokin maa, vai nimen osa
+  const countriesToShow = exactMatch
+    ? [exactMatch]
+    : countries.filter(c => c.toLowerCase().includes(value.toLowerCase()))
 
   // Haetaan kaikki maat API rajapinnan kautta sovelluksen käynnistyessä
   useEffect(() => {
@@ -96,8 +136,8 @@ const App = () => {
   }, [])
 
   // Hakukentän asetus
-  const filterHandler = (event) => {
-    setValue(event)
+  const filterHandler = (countryName) => {
+    setValue(countryName)
   }
 
   // Päivitetään hakukentän arvo
