@@ -2,11 +2,44 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 // Palautetaan maan nimi
-const Countries = ({ country }) => {
+const Countries = ({ country, filterHandler }) => {
   return (
     <div>
       {country}
+      <button onClick={() => {
+        filterHandler(country)
+        return(
+        <CountryInformation
+        key={country}
+        country={country}
+      />)
+      }}>select</button>
     </div>
+  )
+}
+
+// Näytetään maat tai maan tiedot suodatuksen perusteella
+const Information = ({ countriesToShow, filterHandler }) => {
+  // Jos maita yli 10, pyydetään tarkennus
+  if (countriesToShow.length >= 10) {
+    return <div>Too many matches, specify another filter</div>
+  }
+  // Jos vain yksi maa, näytetään sen tiedot
+  if (countriesToShow.length === 1) {
+    return countriesToShow.map(country =>
+      <CountryInformation
+        key={country}
+        country={country}
+      />
+    )
+  }
+  // Muussa tapauksessa listataan maat
+  return countriesToShow.map(country =>
+    <Countries
+      key={country}
+      country={country}
+      filterHandler={filterHandler}
+    />
   )
 }
 
@@ -46,30 +79,6 @@ const CountryInformation = ({ country }) => {
   return null
 }
 
-// Näytetään maat tai maan tiedot suodatuksen perusteella
-const Information = ({ countriesToShow }) => {
-  // Jos maita yli 10, pyydetään tarkennus
-  if (countriesToShow.length >= 10) {
-    return <div>Too many matches, specify another filter</div>
-  }
-  // Jos vain yksi maa, näytetään sen tiedot
-  if (countriesToShow.length === 1) {
-    return countriesToShow.map(country =>
-      <CountryInformation
-        key={country}
-        country={country}
-      />
-    )
-  }
-  // Muussa tapauksessa listataan maat
-  return countriesToShow.map(country =>
-    <Countries
-      key={country}
-      country={country}
-    />
-  )
-}
-
 const App = () => {
   const [value, setValue] = useState('')
   const [countries, setCountries] = useState([])
@@ -86,6 +95,11 @@ const App = () => {
       })
   }, [])
 
+  // Hakukentän asetus
+  const filterHandler = (event) => {
+    setValue(event)
+  }
+
   // Päivitetään hakukentän arvo
   const handleChange = (event) => {
     setValue(event.target.value)
@@ -98,6 +112,7 @@ const App = () => {
       </form>
       <Information
         countriesToShow={countriesToShow}
+        filterHandler={filterHandler}
       />
     </div>
   )
