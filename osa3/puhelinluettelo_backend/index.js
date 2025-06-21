@@ -82,9 +82,13 @@ app.post('/api/persons', (request, response) => {
   console.log(`${body.content}`)
   
 
-  if (!body.name) {
+  if (!body.name || !body.number) {
     return response.status(400).json({ 
       error: 'content missing' 
+    })
+  }else if (persons.map(person => person.name.toLowerCase()).includes(body.name.toLowerCase())){
+    return response.status(400).json({ 
+      error: 'name must be unique' 
     })
   }
 
