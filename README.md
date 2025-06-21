@@ -1,6 +1,8 @@
-# esimerkkipalautusrepositorio
+# Fullstackopen palautusreposeitorio
 
-Eräs varsin toimiva hakemistorakenne palautusrepositoriolle on tässä esimerkkirepositoriossa käytetty tapa, jossa kutakin osaa kohti on oma hakemistonsa, joka vielä jakautuu tehtäväsarjat (kuten osan 1 unicafe) sisältäviin hakemistoihin:
+Repo sisältää fullstackopen -kurssin palautusrepositorion. Tehtävät kansioitu mallirepon mukaan Osa0, Osa1 jne...
+
+Osa3 sovellus internetiin, sovelluksen url: 
 
 ```
 osa0
@@ -11,6 +13,7 @@ osa1
 osa2
   puhelinluettelo
   maiden_tiedot
+osa3
+  puhelinluettelo_backend
 ```
 
-Hakemistoon kannattaa sijoittaa koko tehtäväsarjan react-projekti lukuunottamatta riippuvuuksia sisältävää hakemistoa <i>node\_modules</i>

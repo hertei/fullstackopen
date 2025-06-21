@@ -88,7 +88,6 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
-    console.log(newName, newNumber)
     const personObject = {
       name: newName,
       number: newNumber
@@ -153,16 +152,16 @@ const App = () => {
   }
 
   const deletePerson = (id) => {
-    const url = `http://localhost:3001/notes/${id}`
     const personToDelete = persons.find(p => p.id === id)
     if (confirm(`Poistetaanko ${personToDelete.name}?`)){
       personService
         .deletePerson(id)
         .then(returnedPerson => {
-          console.log(`deleted person ${personToDelete.name}`)
           setPersons(persons.filter(p => p.id !== id))
+          console.log(`Deleted ${Object.entries(returnedPerson)}`)
+          
           setMessage({
-            text:`Deleted ${returnedPerson.name}`,
+            text:`Deleted ${personToDelete.name}`,
             type: 'notification'
           })
           setTimeout(() => {

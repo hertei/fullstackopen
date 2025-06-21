@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:ui": "rm -rf dist && cd ../puhelinluettelo && npm run build && cp -r dist ../../osa3/puhelinluettelo_backend",
     "lint": "eslint .",
     "preview": "vite preview",
     "server": "json-server -p 3001 db.json"
