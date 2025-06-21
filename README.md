@@ -2,7 +2,7 @@
 
 Repo sisältää fullstackopen -kurssin palautusrepositorion. Tehtävät kansioitu mallirepon mukaan Osa0, Osa1 jne...
 
-Osa3 sovellus internetiin, sovelluksen url: 
+Osa3 sovellus internetiin, sovelluksen url: https://puhelinluettelo-619462221306.europe-north1.run.app
 
 ```
 osa0
