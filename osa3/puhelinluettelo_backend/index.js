@@ -1,5 +1,7 @@
 const express = require('express')
 const app = express()
+const morgan = require('morgan')
+morgan.token('body', (req) => JSON.stringify(req.body))
 
 app.use(express.json())
 
@@ -27,22 +29,22 @@ let persons = [
   }
 ]
 
-app.get('/', (request, response) => {
+app.get('/', morgan('tiny'), (request, response) => {
   response.send('<h1>Puhelinluettelo Backend</h1>')
 })
 
-app.get('/info', (request, response) => {
+app.get('/info', morgan('tiny'), (request, response) => {
   let numbers = persons.length
   response.send(`
     <div>Phonebook has info for ${numbers} people</div>
     <div>${new Date().toString()}</div>`)
 })
 
-app.get('/api/persons', (request, response) => {
+app.get('/api/persons', morgan('tiny'), (request, response) => {
   response.json(persons)
 })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', morgan('tiny'), (request, response) => {
   const id = request.params.id
   const person = persons.find(person => person.id === id)
   
@@ -54,7 +56,7 @@ app.get('/api/persons/:id', (request, response) => {
   }
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', morgan('tiny'), (request, response) => {
   const id = request.params.id
   persons = persons.filter(person => person.id !== id)
 
@@ -76,12 +78,9 @@ const generateId = () => {
   return String(newId)
 }
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', morgan(':method :url :status :res[content-length] - :response-time ms :body'), (request, response) => {
   const body = request.body
-
-  console.log(`${body.content}`)
   
-
   if (!body.name || !body.number) {
     return response.status(400).json({ 
       error: 'content missing' 
