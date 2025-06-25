@@ -3,7 +3,6 @@ const express = require('express')
 const Person = require('./models/person')
 const app = express()
 const morgan = require('morgan')
-const note = require('../../../fullstackopenSampleApp/backend/models/note')
 morgan.token('body', (req) => JSON.stringify(req.body))
 
 app.use(express.static('dist'))
