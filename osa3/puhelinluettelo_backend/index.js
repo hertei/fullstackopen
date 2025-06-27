@@ -56,11 +56,6 @@ app.post('/api/persons', morgan(':method :url :status :res[content-length] - :re
       error: 'content missing' 
     })
   }
-  // }else if (persons.map(person => person.name.toLowerCase()).includes(body.name.toLowerCase())){
-  //   return response.status(400).json({ 
-  //     error: 'name must be unique' 
-  //   })
-  // }
 
   Person.findOne(({ name: body.name })).then(existingPerson => {
     if (existingPerson) {
@@ -83,13 +78,13 @@ app.post('/api/persons', morgan(':method :url :status :res[content-length] - :re
 
 app.put('/api/persons/:id', morgan(':method :url :status :res[content-length] - :response-time ms :body'), (request, response, next) => {
   
-  if (!request.body.name || !request.body.number) {
+ const body = request.body
+  
+  if (!body.name || !body.number) {
     return response.status(400).json({ 
       error: 'content missing' 
     })
   }
-
-  const {name, number} = request.body
 
   Person.findByIdAndUpdate(request.params.id)
     .then((person) => {
@@ -97,8 +92,8 @@ app.put('/api/persons/:id', morgan(':method :url :status :res[content-length] - 
         return response.status(404).end()
       }
 
-      person.name = name
-      person.number = number
+      person.name = body.name
+      person.number = body.number
 
       return person.save()
         .then((udpatedPerson) => {
@@ -120,6 +115,8 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError'){
+    return response.status(400).json({ error: error.message })
   }
 
   next(error)

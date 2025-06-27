@@ -148,6 +148,19 @@ const App = () => {
             })
             }, 3000)
         })
+        .catch(error => {
+            console.log(error.response.data)
+            setMessage({
+              text: `Person validation failed: ${error.response.data.error}`,
+              type: 'error'
+            })
+            setTimeout(() => {
+              setMessage({
+                text: null
+            })
+            }, 5000)
+            setPersons(persons.filter(p => p.name !== personObject.name))
+          })
     }
   }
 
