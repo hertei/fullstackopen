@@ -115,7 +115,7 @@ const App = () => {
           })
           .catch(error => {
             setMessage({
-              text: `Can't update ${changedPerson.name}, person was already deleted from server`,
+              text: `Person update failed for ${changedPerson.name}: ${error.response.data.error}`,
               type: 'error'
             })
             setTimeout(() => {
@@ -123,9 +123,6 @@ const App = () => {
                 text: null
             })
             }, 3000)
-            setPersons(persons.filter(p => p.name !== personObject.name))
-            setNewName('')
-            setNewNumber('')
           })
       }else{
         setNewName('')
@@ -183,7 +180,7 @@ const App = () => {
             })
           }, 3000)
         })
-        .catch(error => {
+        .catch(() => {
           setMessage({
               text: `${personToDelete.name} was already deleted from server`,
               type: 'error'
