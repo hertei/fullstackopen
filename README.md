@@ -4,6 +4,8 @@ Repo sisältää fullstackopen -kurssin palautusrepositorion. Tehtävät kansioi
 
 Osa3 sovellus internetiin, sovelluksen url: https://puhelinluettelo-619462221306.europe-north1.run.app
 
+Lisätty sovellus myös Renderiin: https://phonebook-training.onrender.com/
+
 ```
 osa0
 osa1
