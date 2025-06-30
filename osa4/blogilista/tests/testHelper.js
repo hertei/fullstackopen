@@ -1,4 +1,6 @@
-const blogs = [
+const Blog = require('../models/blog')
+
+const initialBlogs = [
   {
     _id: '5a422a851b54a676234d17f7',
     title: 'React patterns',
@@ -49,4 +51,19 @@ const blogs = [
   }
 ]
 
-module.exports =  { blogs }
+const nonExistingId = async () => {
+  const blog = new Blog({
+    _id: '5a422bc61b54a676234d17fc',
+    title: 'willremovethissoon',
+    author: 'willremovethissoon',
+    url: 'willremovethissoon',
+    likes: 0,
+    __v: 0
+  })
+  await blog.save()
+  await blog.deleteOne()
+
+  return blog._id.toString()
+}
+
+module.exports =  { initialBlogs, nonExistingId }

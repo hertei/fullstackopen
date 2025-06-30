@@ -1,4 +1,4 @@
-const testBlogs = require('./testblogsArray').blogs
+const testBlogs = require('./testHelper').initialBlogs
 const { test, describe } = require('node:test')
 const assert = require('node:assert')
 const listHelper = require('../utils/list_helper')
