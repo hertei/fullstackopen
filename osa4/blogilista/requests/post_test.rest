@@ -2,8 +2,6 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "title": "Testpost4",
-    "author": "TH",
-    "url": "www.testpost.test",
-    "likes": 0
+    "author": "Robert C. Martin",
+    "url": "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html"
 }
