@@ -1,4 +1,5 @@
 const blogsRouter = require('express').Router()
+// const { request } = require('../app')
 const Blog = require('../models/blog')
 
 blogsRouter.get('/', async (request, response) => {
@@ -24,6 +25,30 @@ blogsRouter.post('/', async (request, response) => {
   } else {
     response.status(400).json(blog)
   }
+})
+
+blogsRouter.delete('/:id', async (request, response) => {
+  await Blog.findByIdAndDelete(request.params.id)
+  response.status(204).end()
+})
+
+blogsRouter.put('/:id', async (request, response) => {
+  if (Object.keys(request.body).includes('_id')){
+    response
+      .status(400)
+      .send('DB _id is not allowed to change')
+      .end()
+  }
+
+  await Blog
+    .findByIdAndUpdate(request.params.id, request.body, {
+      new: true,
+      runValidators: true
+    })
+
+  response
+    .status(200)
+    .end()
 })
 
 module.exports = blogsRouter

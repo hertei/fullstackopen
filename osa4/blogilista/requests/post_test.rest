@@ -2,6 +2,7 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "author": "Robert C. Martin",
+    "title": "UUsi",
+    "author": "UUSI",
     "url": "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html"
 }

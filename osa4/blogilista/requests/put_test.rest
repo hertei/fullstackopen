@@ -1,0 +1,8 @@
+PUT http://localhost:3003/api/blogs/6864fc195f96f0f3e3511d29
+Content-Type: application/json
+
+{
+  "author": "Lopullinen",
+  "url": "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+  "likes": 999
+}
