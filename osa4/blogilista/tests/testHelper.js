@@ -51,6 +51,30 @@ const initialBlogs = [
   }
 ]
 
+const initialUsers = [
+  {
+    _id: '6868135595d81bec7cbc65c9',
+    username: 'teppo',
+    name: 'Teppo Testaaja',
+    passwordHash: '$2b$10$cQmNA2v.T.Tc2396RkR7J.LZwxDPKicQxmXAcmcNs7H4EfbXzy1Hy',
+    __v: 0
+  },
+  {
+    _id: '68681c941c36ddbec6536125',
+    username: 'mikko',
+    name: 'Mikko Testaaja',
+    passwordHash: '$2b$10$DUi3MyNYU1ML37ZCWOZdkOfZMA.JrmhQhgAASnRVqXtKx/MN/6KjO',
+    __v: 0
+  },
+  {
+    _id: '686821894b7a3ed05a7c0571',
+    username: 'tauno',
+    name: 'Tauno Testaaja',
+    passwordHash: '$2b$10$LBAAworxG73PYekXh4I3LOg/3Di7XjJDA8lUWhljbjQ.25Uf3v3jK',
+    __v: 0
+  }
+]
+
 const nonExistingId = async () => {
   const blog = new Blog({
     _id: '5a422bc61b54a676234d17fc',
@@ -72,4 +96,4 @@ const blogsInDb = async () => {
 }
 
 
-module.exports =  { initialBlogs, nonExistingId, blogsInDb }
+module.exports =  { initialBlogs, nonExistingId, blogsInDb, initialUsers }

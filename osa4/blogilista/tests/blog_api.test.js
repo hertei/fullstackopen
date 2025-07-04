@@ -6,6 +6,7 @@ const app = require('../app')
 
 const helper = require('./testHelper')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const api = supertest(app)
 
@@ -32,12 +33,10 @@ describe('Blog API tests when initialBlogs are added to database', () => {
   describe('adding blog into database', () => {
     test('a valid blog can be added ', async () => {
       const newBlog = {
-        _id: '5a422a851b54a676234d17aa',
         title: 'Testable blog',
         author: 'Tester',
         url: 'no_url',
         likes: 0,
-        __v: 0
       }
 
       await api
@@ -143,6 +142,113 @@ describe('Blog API tests when initialBlogs are added to database', () => {
         .put(`/api/blogs/${blogsAtStart[0].id}`)
         .send(invalidBlog)
         .expect(400)
+    })
+  })
+})
+
+describe('Blog API tests when initial users are added in database', () => {
+  beforeEach(async () => {
+    await User.deleteMany({})
+    await User.insertMany(helper.initialUsers)
+  })
+
+  describe('getting users from database', () => {
+    test('users are returned as json and amount of users is right', async () => {
+      const users = await api
+        .get('/api/users/')
+        .expect(200)
+        .expect('Content-type', /application\/json/)
+
+      assert(users.body.length === helper.initialUsers.length)
+    })
+
+    test('returned users identifier is \'id\' and passwordHash is not returned', async () => {
+      const users = await api
+        .get('/api/users/')
+        .expect(200)
+        .expect('Content-type', /application\/json/)
+
+      assert(Object.keys(users.body[0]).includes('id'))
+      assert(!(Object.keys(users.body[0]).includes('password')))
+    })
+  })
+
+  describe('adding user in database', () => {
+    test('valid user can be added', async () => {
+      const newUser = {
+        username: 'tiina',
+        name: 'Tiina Testaaja',
+        password: 'swordfish'
+      }
+
+      await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const users = await api
+        .get('/api/users')
+        .expect(200)
+        .expect('Content-type', /application\/json/)
+
+      assert.strictEqual(users.body.length, helper.initialUsers.length + 1)
+    })
+
+    test('duplicate username not accepted', async () => {
+      const duplicateUser = {
+        username: 'tauno',
+        name: 'Tauno Testaaja',
+        password: 'swordfish'
+      }
+
+      await api
+        .post('/api/users')
+        .send(duplicateUser)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+
+      const users = await api
+        .get('/api/users')
+        .expect(200)
+        .expect('Content-type', /application\/json/)
+
+      assert.strictEqual(users.body.length, helper.initialUsers.length)
+    })
+
+    test('too short username or password not accepted', async () => {
+      const shortUsername = {
+        username: 'ta',
+        name: 'Tapani Testaaja',
+        password: 'swordfish'
+      }
+
+      const shortPassword = {
+        username: 'tapani',
+        name: 'Tapani Testaaja',
+        password: 'ta'
+      }
+
+      await api
+        .post('/api/users')
+        .send(shortUsername)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+        .expect(/too short/)
+
+      await api
+        .post('/api/users')
+        .send(shortPassword)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+        .expect(/too short/)
+
+      const users = await api
+        .get('/api/users')
+        .expect(200)
+        .expect('Content-type', /application\/json/)
+
+      assert.strictEqual(users.body.length, helper.initialUsers.length)
     })
   })
 
