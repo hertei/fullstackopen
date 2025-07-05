@@ -21,13 +21,26 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).json({ error: error.message })
   } else if (error.name === 'MongoServerError') {
     return response.status(400).json({ error: 'username must be unique' })
+  } else if (error.name === 'JsonWebTokenError') {
+    return response.status(400).json({ error: 'invalid token' })
   }
 
   next(error)
 }
 
+const tokenExtractor = (request, respose, next) => {
+  const authorization = request.get('authorization')
+
+  if (authorization && authorization.startsWith('Bearer ')) {
+    request.token = authorization.replace('Bearer ', '')
+  }
+
+  next()
+}
+
 module.exports = {
   requestLogger,
   unknownEndpoint,
-  errorHandler
+  errorHandler,
+  tokenExtractor
 }

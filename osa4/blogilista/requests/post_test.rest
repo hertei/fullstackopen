@@ -1,8 +1,9 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRhdW5vIiwiaWQiOiI2ODY5MGFmMDlhMjRkZmNhNDkxZmExYmIiLCJpYXQiOjE3NTE3MTk5MTYsImV4cCI6MTc1MTcyMzUxNn0.za33bfOX4M5TvRNKgEFeiA9H14MYaUA5nFqjTL-fjxA
 
 {
-    "title": "UUsi",
-    "author": "UUSI",
+    "title": "Test5",
+    "author": "Testaaja",
     "url": "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html"
 }
