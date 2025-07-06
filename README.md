@@ -17,5 +17,7 @@ osa2
   maiden_tiedot
 osa3
   puhelinluettelo_backend
+osa4
+  blogilista
 ```
 

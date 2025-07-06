@@ -1,5 +1,6 @@
-PUT http://localhost:3003/api/blogs/6864fc195f96f0f3e3511d29
+PUT http://localhost:3003/api/blogs/68697899fb8141b74e46c42a
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRhcGFuaSIsImlkIjoiNjg2OTc0NTljNzkyZTFlNjA4YmNiMzAyIiwiaWF0IjoxNzUxNzQzMDk4LCJleHAiOjE3NTE3NDY2OTh9.CRhpSMET-WSb0KO49i5A4jRf5DznRvzz0IJ-1zAJ-OM
 
 {
   "author": "Lopullinen",
