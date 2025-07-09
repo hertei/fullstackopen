@@ -19,5 +19,7 @@ osa3
   puhelinluettelo_backend
 osa4
   blogilista
+osa5
+  blog_frontend
 ```
 
