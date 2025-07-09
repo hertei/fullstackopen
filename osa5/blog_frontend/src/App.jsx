@@ -3,6 +3,28 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
+
+const Notification = ({ message, type }) => {
+  if (message === null) {
+    return null
+  }
+  if (type === null) {
+    return null
+  }  
+
+  if (type === 'notification'){
+    return (
+      <div className="message">
+        {message}
+      </div>
+  )} else if (type === 'error'){
+    return (
+      <div className="error">
+        {message}
+      </div>
+  )}
+}
+
 const AddBlogForm = ({ addBlog, title, setTitle, author, setAuthor, url, setUrl }) => (
     <form onSubmit={addBlog}>
       <div>
@@ -39,13 +61,16 @@ const AddBlogForm = ({ addBlog, title, setTitle, author, setAuthor, url, setUrl 
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [errorMessage, setErrorMessage] = useState(null)
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+   const [message, setMessage] = useState({
+    text: null,
+    type: null
+  })
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -76,26 +101,43 @@ const App = () => {
           setUser(user)
           setUsername('')
           setPassword('')
-        } catch {
-          setErrorMessage('wrong credentials')
+        } catch (error) {
+          setMessage({
+            text: error.response.data.error || error.message,
+            type: 'error'})
           setTimeout(() => {
-            setErrorMessage(null)
+            setMessage({text: null, type: null})
           }, 5000)
-        }
+      }
     }
 
     const addBlog = async (event) => {
-      event.preventDefault()
-      const blogObject = {
-        title: title,
-        author: author,
-        url: url
+      try{
+        event.preventDefault()
+        const blogObject = {
+          title: title,
+          author: author,
+          url: url
+        }
+        const newBlog = await blogService.create(blogObject)
+        setBlogs(blogs.concat(newBlog))
+        setTitle('')
+        setAuthor('')
+        setUrl('')
+        setMessage({
+            text: `a new blog '${newBlog.title}' by '${newBlog.author}' added` ,
+            type: 'notification'})
+          setTimeout(() => {
+            setMessage({text: null, type: null})
+          }, 5000)
+      } catch (error) {
+          setMessage({
+            text: error.response.data.error || error.message,
+            type: 'error'})
+          setTimeout(() => {
+            setMessage({text: null, type: null})
+          }, 5000)
       }
-      const newBlog = await blogService.create(blogObject)
-      setBlogs(blogs.concat(newBlog))
-      setTitle('')
-      setAuthor('')
-      setUrl('')
     }
 
   const loginForm = () => (
@@ -129,11 +171,16 @@ const App = () => {
 
   return (
     <div>
-      {!user && <h2>Log in to application</h2>}
-      {!user && loginForm()} 
+      {!user && <div>
+        <h2>Log in to application</h2> 
+        <Notification message={message.text} type={message.type} />
+        </div>
+      }
+      {!user && loginForm()}
       {user && 
         <div>
           <h2>blogs</h2>
+          <Notification message={message.text} type={message.type} />
           <p>
             {user.name} logged in 
             <button onClick={handleLogout}>logout</button>
