@@ -65,7 +65,16 @@ blogsRouter.put('/:id', async (request, response) => {
       .status(400)
       .send('DB _id is not allowed to change')
       .end()
-  } else if (!blog.user){
+  } else if (
+    Object.keys(request.body).includes('likes')
+  ) {
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      request.params.id,
+      { likes: request.body.likes },
+      { new: true, runValidators: true }
+    )
+    response.status(200).json(updatedBlog)
+  } else if (!blog.user) {
     response.status(403).json({ error: 'there\'s no key `user` in this blog' })
   } else if ( blog.user.toString() === user._id.toString() ){
     await Blog
@@ -77,7 +86,7 @@ blogsRouter.put('/:id', async (request, response) => {
       .status(200)
       .end()
   } else {
-    response.status(401).json({ error: 'unauthorized' })
+    response.status(401).json({ error: 'only blog owner can update blog author, title or url' })
   }
 })
 
