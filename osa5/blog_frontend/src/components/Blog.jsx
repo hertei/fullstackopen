@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, blogs, setBlogs }) => {
+const Blog = ({ blog, blogs, setBlogs, user}) => {
 
   const [showAll, setShowAll] = useState(false)
 
@@ -19,6 +19,13 @@ const Blog = ({ blog, blogs, setBlogs }) => {
     ))
   }
 
+  const removeBlog = async () => {
+    const id = blog.id
+    await blogService.remove(id)
+    const updatedBlogs = await blogService.getAll()
+    setBlogs(updatedBlogs)
+  }
+
   if(showAll){
     return(
       <div className="blogStyle">
@@ -26,6 +33,7 @@ const Blog = ({ blog, blogs, setBlogs }) => {
         <div> {blog.url} </div>
         <div> {blog.likes}  <button onClick={() => {addLike()}}> like </button></div>
         <div> {blog.user.name} </div>
+        {(user.username === blog.user.username) && <button onClick={removeBlog}> remove </button>}
       </div>  
       
   )} else {
