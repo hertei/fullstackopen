@@ -27,36 +27,36 @@ const App = () => {
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
-        if (loggedUserJSON) {
-          const user = JSON.parse(loggedUserJSON)
-          setUser(user)
-          blogService.setToken(user.token)
-        }
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
   }, [])
 
   const handleLogin = async (event) => {
-      event.preventDefault()
-      try {
-        const user = await loginService.login({
-          username, password,
-        })
+    event.preventDefault()
+    try {
+      const user = await loginService.login({
+        username, password,
+      })
 
-        window.localStorage.setItem(
+      window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
-        )
-        blogService.setToken(user.token)
-        setUser(user)
-        setUsername('')
-        setPassword('')
-      } catch (error) {
-        setMessage({
-          text: error.response.data.error || error.message,
-          type: 'error'})
-        setTimeout(() => {
-          setMessage({text: null, type: null})
-        }, 5000)
-      }
+      )
+      blogService.setToken(user.token)
+      setUser(user)
+      setUsername('')
+      setPassword('')
+    } catch (error) {
+      setMessage({
+        text: error.response.data.error || error.message,
+        type: 'error'})
+      setTimeout(() => {
+        setMessage({text: null, type: null})
+      }, 5000)
     }
+  }
 
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
@@ -77,7 +77,7 @@ const App = () => {
       {!user && <div>
         <h2>Log in to application</h2> 
         <Notification message={message.text} type={message.type} />
-        </div>
+      </div>
       }
       {!user &&
         <Togglable buttonLabel='login'>

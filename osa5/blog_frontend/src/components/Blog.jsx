@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react'
 import blogService from '../services/blogs'
 
 const Blog = ({ blog, blogs, setBlogs, user}) => {
@@ -13,7 +13,7 @@ const Blog = ({ blog, blogs, setBlogs, user}) => {
     const id = blog.id
     const updatedBlog = await blogService.update(id, { ...blog, likes: blog.likes + 1 })    
     setBlogs(blogs.map(blog => 
-        blog.id === id 
+      blog.id === id 
         ? {...blog, likes: updatedBlog.likes}
         : blog
     ))
@@ -23,8 +23,8 @@ const Blog = ({ blog, blogs, setBlogs, user}) => {
     const id = blog.id
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
       await blogService.remove(id)
-    const updatedBlogs = await blogService.getAll()
-    setBlogs(updatedBlogs)
+      const updatedBlogs = await blogService.getAll()
+      setBlogs(updatedBlogs)
     }
   }
 
@@ -38,12 +38,12 @@ const Blog = ({ blog, blogs, setBlogs, user}) => {
         {(user.username === blog.user.username) && <button onClick={removeBlog}> remove </button>}
       </div>  
       
-  )} else {
+    )} else {
     return(
       <div className="blogStyle">
         {blog.title} <button onClick={toggleShow}> view </button>
       </div>  
-  )}
+    )}
 }
 
 export default Blog

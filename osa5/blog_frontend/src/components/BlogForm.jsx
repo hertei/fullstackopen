@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react'
 
 const BlogForm = ({createBlog, addMessage}) => {
   const [title, setTitle] = useState('')
@@ -24,15 +24,15 @@ const BlogForm = ({createBlog, addMessage}) => {
         type: 'notification'})
       setTimeout(() => {
         addMessage({text: null, type: null})
-        }, 5000)
-      } catch (error) {
-          addMessage({
-            text: error.response.data.error || error.message,
-            type: 'error'})
-          setTimeout(() => {
-            addMessage({text: null, type: null})
-          }, 5000)
-      }
+      }, 5000)
+    } catch (error) {
+      addMessage({
+        text: error.response.data.error || error.message,
+        type: 'error'})
+      setTimeout(() => {
+        addMessage({text: null, type: null})
+      }, 5000)
+    }
   }
 
   return (
@@ -41,7 +41,7 @@ const BlogForm = ({createBlog, addMessage}) => {
       <form onSubmit={addBlog}>
         <div>
           title:
-            <input
+          <input
             type="text"
             value={title}
             name="Title"
@@ -50,7 +50,7 @@ const BlogForm = ({createBlog, addMessage}) => {
         </div>
         <div>
           author:
-            <input
+          <input
             type="text"
             value={author}
             name="Author"
@@ -59,7 +59,7 @@ const BlogForm = ({createBlog, addMessage}) => {
         </div>
         <div>
           url:
-            <input
+          <input
             type="text"
             value={url}
             name="URL"

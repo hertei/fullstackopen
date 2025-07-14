@@ -11,12 +11,12 @@ const Notification = ({ message, type }) => {
       <div className="message">
         {message}
       </div>
-  )} else if (type === 'error'){
+    )} else if (type === 'error'){
     return (
       <div className="error">
         {message}
       </div>
-  )}
+    )}
 }
 
 export default Notification
