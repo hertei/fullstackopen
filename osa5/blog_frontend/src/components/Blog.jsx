@@ -21,9 +21,11 @@ const Blog = ({ blog, blogs, setBlogs, user}) => {
 
   const removeBlog = async () => {
     const id = blog.id
-    await blogService.remove(id)
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      await blogService.remove(id)
     const updatedBlogs = await blogService.getAll()
     setBlogs(updatedBlogs)
+    }
   }
 
   if(showAll){
