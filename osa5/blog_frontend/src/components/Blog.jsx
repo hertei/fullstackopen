@@ -1,15 +1,14 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, blogs, setBlogs, user}) => {
-
+const Blog = ({ blog, blogs, setBlogs, user, addLike }) => {
   const [showAll, setShowAll] = useState(false)
 
   const toggleShow = () => {
     setShowAll(!showAll)
   }
 
-  const addLike = async () => {
+  const defaultAddLike = async () => {
     const id = blog.id
     const updatedBlog = await blogService.update(id, { ...blog, likes: blog.likes + 1 })    
     setBlogs(blogs.map(blog => 
@@ -18,6 +17,8 @@ const Blog = ({ blog, blogs, setBlogs, user}) => {
         : blog
     ))
   }
+
+  const handleLike = addLike ? () => addLike(blog) : defaultAddLike
 
   const removeBlog = async () => {
     const id = blog.id
@@ -33,7 +34,7 @@ const Blog = ({ blog, blogs, setBlogs, user}) => {
       <div className="blogStyle">
         <div> {blog.title} by {blog.author}  <button onClick={toggleShow}> hide </button> </div>
         <div> {blog.url} </div>
-        <div> {blog.likes}  <button onClick={() => {addLike()}}> like </button></div>
+        <div> {blog.likes}  <button onClick={handleLike}> like </button></div>
         <div> {blog.user.name} </div>
         {(user.username === blog.user.username) && <button onClick={removeBlog}> remove </button>}
       </div>  
