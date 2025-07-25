@@ -3,12 +3,18 @@ const { loginWith, createBlog } = require('./helper')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
-    const reply = await request.post('http://localhost:3003/api/testing/reset')
-        
+    await request.post('http://localhost:3003/api/testing/reset')  
     await request.post('http://localhost:3003/api/users', {
       data: {
         name: 'Matti Luukkainen',
         username: 'mluukkai',
+        password: 'salainen'
+      }
+    })
+    await request.post('http://localhost:3003/api/users', {
+      data: {
+        name: 'Lukki Maattainen',
+        username: 'lmaattai',
         password: 'salainen'
       }
     })
@@ -66,10 +72,35 @@ describe('Blog app', () => {
       await createBlog(page, 'This is test blog', 'Test blog author', 'test blog url')
       await createBlog(page, 'This is second test blog', 'Test blog author', 'test blog url')
       await createBlog(page, 'This is third test blog', 'Test blog author', 'test blog url')
-
     })
 
     test('a blog can be liked', async ({ page }) => {
+      const likedBlog = await page.locator('.blogStyle').filter({ hasText: 'This is third test blog'})
+      await likedBlog.getByRole('button', { name: 'view'}).click()
+      await expect(likedBlog).toContainText('0')
+      await page.getByRole('button', { name: 'like' }).click()
+      await expect(likedBlog).toContainText('1')
+    })
+
+    test('Blog creator can delete the blog', async ({ page }) => {
+      const blogToRemove = await page.locator('.blogStyle').filter({ hasText: 'This is third test blog'})
+      await blogToRemove.getByRole('button', { name: 'view'}).click()
+      await expect(blogToRemove).toBeVisible()
+      await page.on('dialog', dialog => dialog.accept())
+      await blogToRemove.getByRole('button', { name: 'remove'}).click()
+      await expect(page.locator('.blogStyle').filter({ hasText: 'This is third test blog'})).not.toBeVisible()
+    })
+
+    test('Only Blog creator can see the blog remove button', async ({ page }) => {
+      await page.getByRole('button', { name: 'logout' }).click()
+      await loginWith(page, 'lmaattai', 'salainen')
+      const blogToRemove = await page.locator('.blogStyle').filter({ hasText: 'This is third test blog'})
+      await blogToRemove.getByRole('button', { name: 'view'}).click()
+      await expect(blogToRemove).toBeVisible()
+      await expect(blogToRemove.getByRole('button', { name: 'remove'})).not.toBeVisible()
+    })
+
+    test('Blogs are sorted descending order by likes', async ({ page }) => {
       //
     })
   })

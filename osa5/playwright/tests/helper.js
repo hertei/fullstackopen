@@ -14,5 +14,4 @@ const createBlog = async (page, title, author, url)  => {
   await page.locator('.blogStyle').getByText(title).waitFor()
 }
 
-
 export { loginWith, createBlog }
