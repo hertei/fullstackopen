@@ -6,6 +6,8 @@ Osa3 sovellus internetiin, sovelluksen url: https://puhelinluettelo-619462221306
 
 Lisätty sovellus myös Renderiin: https://phonebook-training.onrender.com/
 
+HUOM! Jokainen osa on omassa kansiossaan, eli esimerkiksi osan 5 backen löytyy osan 4 kansiosta.
+
 ```
 osa0
 osa1
@@ -21,5 +23,6 @@ osa4
   blogilista
 osa5
   blog_frontend
+  playwright
 ```
 
