@@ -100,8 +100,41 @@ describe('Blog app', () => {
       await expect(blogToRemove.getByRole('button', { name: 'remove'})).not.toBeVisible()
     })
 
-    test('Blogs are sorted descending order by likes', async ({ page }) => {
-      //
+    test.slow('Blogs are sorted descending order by likes', async ({ page }) => {
+      const blogsAtStart = await page.locator('.blogStyle').allTextContents()
+      await expect(blogsAtStart[0].match(/This is test blog/)).toBeTruthy()
+      await expect(blogsAtStart[1].match(/This is second test blog/)).toBeTruthy()
+      await expect(blogsAtStart[2].match(/This is third test blog/)).toBeTruthy()
+
+      await page.locator('.blogStyle').filter({ hasText: 'This is third test blog'}).getByRole('button', { name: 'view'}).click()
+      await page.locator('.blogStyle').filter({ hasText: 'This is third test blog'}).getByRole('button', { name: 'like'}).click()
+      await page.getByText('1').waitFor()
+      await page.locator('.blogStyle').filter({ hasText: 'This is third test blog'}).getByRole('button', { name: 'like'}).click()
+      await page.getByText('2').waitFor()
+      await page.locator('.blogStyle').filter({ hasText: 'This is third test blog'}).getByRole('button', { name: 'like'}).click()      
+      await page.getByText('3').waitFor()
+      await page.locator('.blogStyle').filter({ hasText: 'This is third test blog'}).getByRole('button', { name: 'hide'}).click()      
+
+      await page.locator('.blogStyle').filter({ hasText: 'This is second test blog'}).getByRole('button', { name: 'view'}).click()
+      await page.locator('.blogStyle').filter({ hasText: 'This is second test blog'}).getByRole('button', { name: 'like'}).click()
+      await page.getByText('1').waitFor()
+      await page.locator('.blogStyle').filter({ hasText: 'This is second test blog'}).getByRole('button', { name: 'like'}).click()
+      await page.getByText('2').waitFor()
+      await page.locator('.blogStyle').filter({ hasText: 'This is second test blog'}).getByRole('button', { name: 'hide'}).click()
+
+
+      await page.locator('.blogStyle').filter({ hasText: 'This is test blog'}).getByRole('button', { name: 'view'}).click()
+      await page.locator('.blogStyle').filter({ hasText: 'This is test blog'}).getByRole('button', { name: 'like'}).click()
+      await page.getByText('1').waitFor()
+      await page.locator('.blogStyle').filter({ hasText: 'This is test blog'}).getByRole('button', { name: 'hide'}).click()
+
+      await expect(page.getByText('like')).not.toBeVisible()
+
+
+      const blogsAtLast = await page.locator('.blogStyle').allTextContents()
+      await expect(blogsAtLast[0].match(/This is third test blog/)).toBeTruthy()
+      await expect(blogsAtLast[1].match(/This is second test blog/)).toBeTruthy()
+      await expect(blogsAtLast[2].match(/This is test blog/)).toBeTruthy()
     })
   })
 })
