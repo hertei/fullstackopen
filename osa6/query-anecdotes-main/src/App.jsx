@@ -6,20 +6,30 @@ import Notification from './components/Notification'
 const App = () => {
   const queryClient = useQueryClient()
 
-  const handleVote = (anecdote) => {
-    console.log('vote')
-  }
+  const updateAnecdoteMutation = useMutation({
+    mutationFn: updateAnecdote,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
+    },
+  })
 
+  const handleVote = (anecdote) => {
+    updateAnecdoteMutation.mutate({...anecdote, votes: anecdote.votes + 1})
+  }
+  
   const result = useQuery({
     queryKey: ['anecdotes'],
     queryFn: getAnecdotes,
+    retry: 1,
     refetchOnWindowFocus: false
   })
 
   console.log(JSON.parse(JSON.stringify(result)))
 
-  if ( result.isLoading ) {
+  if ( result.isPending ) {
     return <div>loading data...</div>
+  } else if ( result.isError ) {
+    return <div>anecdote service is not available due to problems in server</div>
   }
 
   const anecdotes = result.data
@@ -29,7 +39,9 @@ const App = () => {
       <h3>Anecdote app</h3>
     
       <Notification />
-      <AnecdoteForm />
+      <AnecdoteForm 
+        queryClient = {queryClient}
+      />
     
       {anecdotes.map(anecdote =>
         <div key={anecdote.id}>
