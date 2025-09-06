@@ -10,6 +10,17 @@ const AnecdoteForm = ({ queryClient }) => {
     mutationFn: createAnecdote,
     onSuccess: async ( newAnecdote ) => {
       await queryClient.invalidateQueries({ queryKey: ['anecdotes']})
+      notificationDispatch({ type: 'SHOW', payload: `new anecdote '${newAnecdote.content}' added` })
+      setTimeout(() => {
+        notificationDispatch({ type: 'HIDE' })
+      }, 5000)
+    },
+    onError: ( error ) => {
+      const messageFromServer = error.response?.data?.error || "Unknown error"
+      notificationDispatch({ type: 'SHOW', payload: messageFromServer})
+      setTimeout(() => {
+        notificationDispatch({ type: 'HIDE' })
+      }, 5000)
     }
   })
 
@@ -18,11 +29,7 @@ const AnecdoteForm = ({ queryClient }) => {
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
     newAnecdoteMutation.mutate({ content, votes: 0 })
-    notificationDispatch({ type: 'SHOW', payload: `new anecdote '${content}' added` })
-    setTimeout(() => {
-      notificationDispatch({ type: 'HIDE' })
-    }, 5000)
-}
+  }
 
   return (
     <div>
