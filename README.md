@@ -1,4 +1,4 @@
-# Fullstackopen palautusreposeitorio
+# Fullstackopen palautusrepositorio
 
 Repo sisältää fullstackopen -kurssin palautusrepositorion. Tehtävät kansioitu mallirepon mukaan Osa0, Osa1 jne...
 
@@ -24,5 +24,9 @@ osa4
 osa5
   blog_frontend
   playwright
+osa6
+  query-anecdotes-main
+  redux-anecdotes
+  unicafe-redux
 ```
 
